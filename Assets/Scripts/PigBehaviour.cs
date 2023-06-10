@@ -1,6 +1,8 @@
+using Unity.VisualScripting;
+using UnityEditor.EditorTools;
 using UnityEngine;
 
-public class RandomMovement : MonoBehaviour
+public class RandomMovement : MonoBehaviour, IMortalEntity
 {
     public float movementSpeed = 5f;
     public float minX = -10f;
@@ -11,6 +13,12 @@ public class RandomMovement : MonoBehaviour
     private Vector3 targetPosition;
     private float pauseTimeRemaining;
     private Rigidbody rb;
+
+    [SerializeField]
+    public int remainingHealthPoints { get; private set; } = 12;
+
+    [SerializeField]
+    public bool IsAlive => remainingHealthPoints > 0;
 
     private void Start()
     {
@@ -55,7 +63,12 @@ public class RandomMovement : MonoBehaviour
 
     private void SetNewTargetPosition()
     {
-        Vector3 randomPosition = new Vector3(Random.Range(minX, maxX), transform.position.y, Random.Range(minZ, maxZ));
+        Vector3 randomPosition = new Vector3(transform.position.x + Random.Range(minX, maxX), transform.position.y, transform.position.z + Random.Range(minZ, maxZ));
         targetPosition = randomPosition;
+    }
+
+    void IMortalEntity.dealDamage(int damage)
+    {
+        throw new System.NotImplementedException();
     }
 }
