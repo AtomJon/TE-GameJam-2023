@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class ChickenBehaviour : MonoBehaviour, IMortalEntity
 {
@@ -13,6 +14,7 @@ public class ChickenBehaviour : MonoBehaviour, IMortalEntity
 
     [SerializeField]
     private float speed;
+    private NavMeshAgent agent;
 
     public void dealDamage(int damage)
     {
@@ -28,12 +30,17 @@ public class ChickenBehaviour : MonoBehaviour, IMortalEntity
     // Start is called before the first frame update
     void Start()
     {
+<<<<<<< Updated upstream
 
+=======
+        agent = GetComponent<NavMeshAgent>();
+        agent.destination = targetTransform.position;
+>>>>>>> Stashed changes
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.position = Vector3.MoveTowards(transform.position, targetTransform.position, speed * Time.deltaTime);
+        agent.destination = targetTransform.position;
     }
 }
