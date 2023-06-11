@@ -1,7 +1,9 @@
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEditor.EditorTools;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class RandomMovement : MonoBehaviour, IMortalEntity
 {
     public float movementSpeed = 5f;
@@ -14,17 +16,31 @@ public class RandomMovement : MonoBehaviour, IMortalEntity
     private float pauseTimeRemaining;
     private Rigidbody rb;
 
+    private AudioSource audioSource;
+
     [SerializeField]
     public int remainingHealthPoints { get; private set; } = 12;
 
     [SerializeField]
     public bool IsAlive => remainingHealthPoints > 0;
 
+
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        audioSource = GetComponent<AudioSource>();
+
         SetNewTargetPosition();
         pauseTimeRemaining = Random.Range(1f, 3f);
+
+        StartCoroutine(WaitAndStartSound());
+    }
+
+    IEnumerator WaitAndStartSound()
+    {
+        yield return new WaitForSeconds(Random.Range(0, 4));
+        audioSource.Play();
     }
 
     private void Update()
@@ -69,6 +85,12 @@ public class RandomMovement : MonoBehaviour, IMortalEntity
 
     void IMortalEntity.dealDamage(int damage)
     {
-        throw new System.NotImplementedException();
+        remainingHealthPoints -= damage;
+
+        if (IsAlive == false)
+        {
+            this.enabled = false;
+            transform.rotation *= Quaternion.AngleAxis(90, Vector3.right);
+        }
     }
 }
